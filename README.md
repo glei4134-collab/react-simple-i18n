@@ -1,14 +1,19 @@
 # react-simple-i18n
 
+> **版本**: 1.0.0  
+> **源项目**: [CodexMonitor](https://github.com/glei4134-collab/CodexMonitor) - A Tauri-based desktop application for orchestrating Codex agents
+
 A lightweight, zero-dependency internationalization (i18n) library for React applications.
 
-## Features
+## 📦 特性
 
-- **Zero dependencies** - No external libraries required
-- **TypeScript support** - Fully typed for type safety
-- **Simple API** - Easy to learn and use
-- **Parameter interpolation** - Support for dynamic values in translations
-- **Flexible** - Works with any translation structure
+- ✅ **零依赖** - 无需安装任何外部库
+- ✅ **TypeScript 支持** - 完整的类型定义
+- ✅ **简单 API** - 易于学习和使用
+- ✅ **参数插值** - 支持 `{{variable}}` 语法
+- ✅ **灵活结构** - 支持任意翻译结构
+- ✅ **自动回退** - 翻译缺失时自动回退到默认语言
+- ✅ **React 18+** - 支持最新 React 版本
 
 ## Installation
 
