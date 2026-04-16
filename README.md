@@ -158,14 +158,239 @@ my-app/
 │   └── App.tsx
 ```
 
-## Real-World Example
+## 🔗 源项目引用
 
-This library is used in [CodexMonitor](https://github.com/your-username/CodexMonitor), a Tauri-based desktop application.
+**CodexMonitor** - 本库提取自 CodexMonitor 项目
 
-## License
+- **GitHub**: https://github.com/glei4134-collab/CodexMonitor
+- **项目描述**: 使用 Tauri 构建的桌面应用，用于编排本地的 Codex agents
+- **i18n 实现**: https://github.com/glei4134-collab/CodexMonitor/tree/master/src/i18n
 
-MIT License - feel free to use in your projects!
+本库提取了 CodexMonitor 中的国际化功能，提供了一个轻量、独立的 React i18n 解决方案。
 
-## Contributing
+## 🎯 支持的环境
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+- **Node.js**: 16+
+- **React**: 16.8.0+ (需要 React Hooks)
+- **浏览器**: 现代浏览器 (Chrome, Firefox, Safari, Edge)
+- **打包工具**: Vite, Webpack, Parcel, Rollup
+
+## ⚙️ 技术要求
+
+- **React**: 需要 React 16.8.0 或更高版本（支持 Hooks）
+- **TypeScript**: 可选，但推荐使用（提供完整类型提示）
+- **无其他依赖**: 纯 React + TypeScript 实现
+
+## 📚 使用示例
+
+### 基础用法
+
+```tsx
+import { I18nProvider, useI18n } from 'react-simple-i18n';
+
+// 定义翻译
+const translations = {
+  en: {
+    'app.title': 'My App',
+    'greeting': 'Hello, {{name}}!',
+  },
+  'zh-CN': {
+    'app.title': '我的应用',
+    'greeting': '你好，{{name}}！',
+  },
+};
+
+function App() {
+  return (
+    <I18nProvider locale="zh-CN" translations={translations}>
+      <MyComponent />
+    </I18nProvider>
+  );
+}
+
+function MyComponent() {
+  const { t, locale } = useI18n();
+  return (
+    <div>
+      <h1>{t('app.title')}</h1>
+      <p>{t('greeting', { name: 'World' })}</p>
+    </div>
+  );
+}
+```
+
+## 🚀 性能特性
+
+- **轻量**: 压缩后约 1KB
+- **高性能**: 使用 `useMemo` 缓存翻译函数
+- **Tree-shaking**: 支持按需导入
+- **无运行时开销**: 翻译结构在构建时确定
+
+## 🔧 高级用法
+
+### 🌐 动态语言切换（详细说明）
+
+#### 方式 1: 下拉选择器切换
+```tsx
+import { I18nProvider, useI18n } from 'react-simple-i18n';
+
+// 语言选择组件
+function LanguageSwitcher() {
+  const { locale } = useI18n();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+
+  const handleChange = (newLocale) => {
+    setCurrentLocale(newLocale);
+  };
+
+  return (
+    <select 
+      value={currentLocale} 
+      onChange={(e) => handleChange(e.target.value)}
+    >
+      <option value="en">English</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+    </select>
+  );
+}
+
+// 使用示例
+function App() {
+  const [locale, setLocale] = useState('en');
+  
+  return (
+    <I18nProvider 
+      locale={locale} 
+      translations={translations}
+      defaultLocale="en"
+    >
+      <div>
+        <LanguageSwitcher />
+        <MainContent />
+      </div>
+    </I18nProvider>
+  );
+}
+```
+
+#### 方式 2: 按钮切换
+```tsx
+function LanguageButtons() {
+  const { locale } = useI18n();
+
+  const languages = [
+    { code: 'en', label: '🇺🇸 English' },
+    { code: 'zh-CN', label: '🇨🇳 简体中文' },
+    { code: 'ja', label: '🇯🇵 日本語' },
+  ];
+
+  return (
+    <div>
+      {languages.map((lang) => (
+        <button
+          key={lang.code}
+          onClick={() => setLocale(lang.code)}
+          style={{ 
+            fontWeight: locale === lang.code ? 'bold' : 'normal' 
+          }}
+        >
+          {lang.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+```
+
+#### 方式 3: 从后端/存储加载语言设置
+```tsx
+function App() {
+  const [locale, setLocale] = useState('en');
+
+  // 从 localStorage 加载保存的语言
+  useEffect(() => {
+    const savedLocale = localStorage.getItem('app-locale');
+    if (savedLocale) {
+      setLocale(savedLocale);
+    }
+  }, []);
+
+  // 保存语言选择
+  const handleLocaleChange = (newLocale) => {
+    setLocale(newLocale);
+    localStorage.setItem('app-locale', newLocale);
+  };
+
+  return (
+    <I18nProvider locale={locale} translations={translations}>
+      <LanguageSwitcher onChange={handleLocaleChange} />
+      <Content />
+    </I18nProvider>
+  );
+}
+```
+
+#### 方式 4: 根据浏览器语言自动设置
+```tsx
+function getBrowserLocale() {
+  const browserLang = navigator.language || navigator.userLanguage;
+  
+  // 匹配支持的语言
+  const supportedLocales = ['en', 'zh-CN', 'ja', 'ko'];
+  const browserLocale = browserLang.split('-')[0];
+  
+  // 检查是否支持
+  const fullMatch = supportedLocales.find(loc => browserLang.startsWith(loc));
+  const shortMatch = supportedLocales.find(loc => loc.startsWith(browserLocale));
+  
+  return fullMatch || shortMatch || 'en';
+}
+
+function App() {
+  const [locale, setLocale] = useState(getBrowserLocale);
+  
+  return (
+    <I18nProvider locale={locale} translations={translations}>
+      <Content />
+    </I18nProvider>
+  );
+}
+```
+
+### 嵌套翻译键
+
+```tsx
+// 翻译定义
+const translations = {
+  en: {
+    'settings': {
+      'title': 'Settings',
+      'language': {
+        'label': 'Language',
+        'en': 'English',
+        'zh-CN': 'Chinese',
+      },
+    },
+  },
+};
+
+// 使用
+t('settings.title')           // "Settings"
+t('settings.language.label')  // "Language"
+```
+
+## ⚠️ 限制
+
+- **不支持复数形式**: 如需复数支持，请自行扩展
+- **不支持日期/数字格式化**: 可结合 `Intl` API 使用
+- **不支持语言检测**: 需要自行实现语言检测逻辑
+
+## 📄 许可证
+
+MIT License - 可以在你的项目中使用！
+
+## 🤝 贡献
+
+欢迎贡献代码！请提交 Issue 或 Pull Request。
