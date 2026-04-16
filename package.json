@@ -1,0 +1,37 @@
+{
+  "name": "react-simple-i18n",
+  "version": "1.0.0",
+  "description": "A lightweight, zero-dependency internationalization library for React applications",
+  "main": "types.ts",
+  "types": "types.ts",
+  "scripts": {
+    "example": "vite",
+    "dev": "vite",
+    "build": "tsc"
+  },
+  "keywords": [
+    "react",
+    "i18n",
+    "internationalization",
+    "localization",
+    "translation",
+    "multilingual"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/react-simple-i18n"
+  }
+}
