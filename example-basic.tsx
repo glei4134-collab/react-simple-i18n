@@ -1,118 +1,158 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { I18nProvider, useI18n, type Translations, type Locale } from "./types";
 
-// Sample translations
+// Comprehensive translation dictionaries supporting both nested and flat keys
 const translations: Translations = {
   en: {
-    "app.title": "React Simple i18n",
-    "app.subtitle": "A lightweight internationalization library",
-    "counter.increment": "Increment",
-    "counter.decrement": "Decrement",
-    "counter.reset": "Reset",
-    "counter.count": "Count: {{count}}",
-    "settings.title": "Settings",
-    "settings.language": "Language",
-    "settings.theme": "Theme",
-    "settings.theme.light": "Light",
-    "settings.theme.dark": "Dark",
-    "greeting.formal": "Hello, {{name}}!",
-    "greeting.informal": "Hey {{name}}, what's up?",
+    app: {
+      title: "React Simple i18n",
+      subtitle: "A lightweight, zero-dependency internationalization library for React",
+    },
+    user: {
+      greeting: "Hello, {{name}}! Welcome to our platform.",
+      stats: "You have {{count}} unread notification(s).",
+    },
+    cart: {
+      items_zero: "Your shopping cart is empty.",
+      items_one: "You have 1 item in your cart.",
+      items_other: "You have {{count}} items in your cart.",
+    },
+    settings: {
+      title: "Language & Settings",
+      language: "Choose Language",
+      theme: "Theme",
+      light: "Light",
+      dark: "Dark",
+    },
+    // Also supports flat keys seamlessly
+    "actions.submit": "Submit Order",
+    "actions.cancel": "Cancel",
   },
   "zh-CN": {
-    "app.title": "React 简单国际化",
-    "app.subtitle": "轻量级国际化库",
-    "counter.increment": "增加",
-    "counter.decrement": "减少",
-    "counter.reset": "重置",
-    "counter.count": "计数：{{count}}",
-    "settings.title": "设置",
-    "settings.language": "语言",
-    "settings.theme": "主题",
-    "settings.theme.light": "浅色",
-    "settings.theme.dark": "深色",
-    "greeting.formal": "你好，{{name}}！",
-    "greeting.informal": "嘿 {{name}}，怎么样？",
+    app: {
+      title: "React Simple i18n",
+      subtitle: "面向 React 的零依赖、超轻量级现代化国际化多语言组件库",
+    },
+    user: {
+      greeting: "你好，{{name}}！欢迎来到系统平台。",
+      stats: "您有 {{count}} 条未读通知。",
+    },
+    cart: {
+      items_zero: "您的购物车是空的。",
+      items_one: "您的购物车中有 1 件商品。",
+      items_other: "您的购物车中有 {{count}} 件商品。",
+    },
+    settings: {
+      title: "语言与系统偏好",
+      language: "选择语言",
+      theme: "主题",
+      light: "浅色模式",
+      dark: "深色模式",
+    },
+    "actions.submit": "提交订单",
+    "actions.cancel": "取消",
   },
 };
 
-function Counter() {
+function Header() {
   const { t } = useI18n();
-  const [count, setCount] = useState(0);
-
   return (
-    <div style={{ margin: "20px 0", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h2>{t("app.title")}</h2>
-      <p>{t("app.subtitle")}</p>
-
-      <div style={{ marginTop: "20px" }}>
-        <p style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {t("counter.count", { count: count.toString() })}
-        </p>
-
-        <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
-          <button onClick={() => setCount(c => c - 1)}>
-            {t("counter.decrement")}
-          </button>
-          <button onClick={() => setCount(0)}>
-            {t("counter.reset")}
-          </button>
-          <button onClick={() => setCount(c => c + 1)}>
-            {t("counter.increment")}
-          </button>
-        </div>
-      </div>
-    </div>
+    <header style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "24px" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold", color: "#1e293b", margin: 0 }}>
+        {t("app.title")}
+      </h1>
+      <p style={{ color: "#64748b", marginTop: "8px", fontSize: "16px" }}>
+        {t("app.subtitle")}
+      </p>
+    </header>
   );
 }
 
-function Settings({ currentLocale, onLocaleChange }: {
+function UserGreeting() {
+  const { t } = useI18n();
+  return (
+    <section style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
+      <h3 style={{ margin: "0 0 8px 0", color: "#334155" }}>🎯 Parameter Interpolation</h3>
+      <p style={{ margin: "4px 0", color: "#475569" }}>
+        {t("user.greeting", { name: "Alex" })}
+      </p>
+    </section>
+  );
+}
+
+function CartCounter() {
+  const { t } = useI18n();
+  const [itemCount, setItemCount] = useState<number>(0);
+
+  return (
+    <section style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
+      <h3 style={{ margin: "0 0 8px 0", color: "#334155" }}>🔢 Pluralization Example</h3>
+      <p style={{ fontSize: "18px", fontWeight: "600", color: "#0f172a", margin: "12px 0" }}>
+        {t("cart.items", { count: itemCount })}
+      </p>
+      <div style={{ display: "flex", gap: "8px" }}>
+        <button
+          onClick={() => setItemCount((c) => Math.max(0, c - 1))}
+          style={{ padding: "6px 14px", borderRadius: "6px", border: "1px solid #cbd5e1", cursor: "pointer" }}
+        >
+          - Remove Item
+        </button>
+        <button
+          onClick={() => setItemCount(0)}
+          style={{ padding: "6px 14px", borderRadius: "6px", border: "1px solid #cbd5e1", cursor: "pointer" }}
+        >
+          Clear
+        </button>
+        <button
+          onClick={() => setItemCount((c) => c + 1)}
+          style={{ padding: "6px 14px", borderRadius: "6px", background: "#3b82f6", color: "#fff", border: "none", cursor: "pointer" }}
+        >
+          + Add Item
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function SettingsBar({
+  currentLocale,
+  onLocaleChange,
+}: {
   currentLocale: Locale;
   onLocaleChange: (locale: Locale) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locales } = useI18n();
 
   return (
-    <div style={{ margin: "20px 0", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h3>{t("settings.title")}</h3>
-
-      <div style={{ marginTop: "15px" }}>
-        <label>{t("settings.language")}: </label>
-        <select
-          value={currentLocale}
-          onChange={(e) => onLocaleChange(e.target.value as Locale)}
-        >
-          <option value="en">English</option>
-          <option value="zh-CN">简体中文</option>
-        </select>
-      </div>
-    </div>
-  );
-}
-
-function GreetingSection() {
-  const { t } = useI18n();
-
-  return (
-    <div style={{ margin: "20px 0", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h3>Parameter Interpolation Examples</h3>
-
-      <div style={{ marginTop: "15px" }}>
-        <p>{t("greeting.formal", { name: "Alice" })}</p>
-        <p>{t("greeting.informal", { name: "Bob" })}</p>
-      </div>
-    </div>
+    <footer style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #e2e8f0" }}>
+      <label style={{ fontWeight: "600", marginRight: "12px", color: "#334155" }}>
+        {t("settings.language")}:
+      </label>
+      <select
+        value={currentLocale}
+        onChange={(e) => onLocaleChange(e.target.value)}
+        style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+      >
+        {locales.map((loc) => (
+          <option key={loc} value={loc}>
+            {loc === "zh-CN" ? "🇨🇳 简体中文 (zh-CN)" : "🇺🇸 English (en)"}
+          </option>
+        ))}
+      </select>
+    </footer>
   );
 }
 
 export function App() {
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>("zh-CN");
 
   return (
     <I18nProvider locale={locale} translations={translations} defaultLocale="en">
-      <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px" }}>
-        <Counter />
-        <Settings currentLocale={locale} onLocaleChange={setLocale} />
-        <GreetingSection />
+      <div style={{ maxWidth: "680px", margin: "40px auto", padding: "24px", fontFamily: "sans-serif", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)", borderRadius: "12px", background: "#ffffff" }}>
+        <Header />
+        <UserGreeting />
+        <CartCounter />
+        <SettingsBar currentLocale={locale} onLocaleChange={setLocale} />
       </div>
     </I18nProvider>
   );

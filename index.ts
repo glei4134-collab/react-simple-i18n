@@ -1,4 +1,4 @@
-// Export all public APIs
+﻿// Export all public APIs
 export {
   I18nProvider,
   useI18n,
@@ -8,8 +8,9 @@ export type {
   Locale,
   TranslationValue,
   TranslationParams,
+  NestedTranslations,
   Translations,
+  NestedKeyOf,
   I18nContextValue,
   I18nProviderProps,
-  useI18nReturn,
 } from "./types";

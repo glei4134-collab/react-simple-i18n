@@ -1,189 +1,143 @@
-# react-simple-i18n
+﻿# 🌐 react-simple-i18n
 
-> **版本**: 1.0.0  
-> **源项目**: [CodexMonitor](https://github.com/glei4134-collab/CodexMonitor) - A Tauri-based desktop application for orchestrating Codex agents
+<p align="center">
+  <a href="https://www.npmjs.com/package/react-simple-i18n"><img src="https://img.shields.io/badge/npm-v1.2.0-blue?style=flat-square" alt="npm" /></a>
+  <img src="https://img.shields.io/badge/bundle%20size-%3C%201KB-brightgreen?style=flat-square" alt="Bundle Size" />
+  <img src="https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/dependencies-0-success?style=flat-square" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
+</p>
 
-A lightweight, zero-dependency internationalization (i18n) library for React applications.
+> A **zero-dependency, ultra-lightweight (< 1KB)** internationalization (i18n) library for React applications.  
+> Designed with simplicity, speed, and modern React (18/19) in mind.
 
-## 📦 特性
+---
 
-- ✅ **零依赖** - 无需安装任何外部库
-- ✅ **TypeScript 支持** - 完整的类型定义
-- ✅ **简单 API** - 易于学习和使用
-- ✅ **参数插值** - 支持 `{{variable}}` 语法
-- ✅ **灵活结构** - 支持任意翻译结构
-- ✅ **自动回退** - 翻译缺失时自动回退到默认语言
-- ✅ **React 16.8+** - 支持 Hooks 的所有 React 版本
+## ✨ Features
 
-## 🚀 快速开始
+- 🪶 **Zero Dependencies & Ultra Lightweight**: Less than **1 KB** minified + gzipped. No bloated dependencies.
+- 🌳 **Nested & Flat Dictionaries**: Seamlessly supports both nested JSON objects (`user.profile.title`) and flat key maps (`"user.title": "..."`).
+- 🔢 **Smart Pluralization**: Built-in support for count-based plural resolution (`_zero`, `_one`, `_other`).
+- ⚡ **Dynamic Interpolation**: Insert dynamic variables via `{{variable}}` or `{variable}` effortlessly.
+- 🛡️ **Graceful Fallback**: Automatically falls back from current language to `defaultLocale`, and finally to raw key. No crash, no white screens.
+- 🔒 **Type-Safe Autocompletion**: Full TypeScript support with path inference helper types.
+- ⚛️ **Hook & Context API**: Modern React architecture using `I18nProvider` and `useI18n()`.
 
-### 1. 安装
+---
+
+## 📦 Installation
 
 ```bash
 npm install react-simple-i18n
-```
-
-或使用 yarn：
-
-```bash
+# or
+pnpm add react-simple-i18n
+# or
 yarn add react-simple-i18n
 ```
 
-### 2. 定义翻译
+---
+
+## 🚀 Quick Start
+
+### 1. Define Translations
 
 ```typescript
-import type { Translations } from 'react-simple-i18n';
+import { type Translations } from "react-simple-i18n";
 
 export const translations: Translations = {
   en: {
-    'greeting': 'Hello, {{name}}!',
-    'settings.title': 'Settings',
-    'settings.language': 'Language',
+    app: {
+      title: "Welcome, {{name}}!",
+      subtitle: "Explore our awesome platform.",
+    },
+    cart: {
+      items_zero: "Your cart is empty.",
+      items_one: "You have 1 item in your cart.",
+      items_other: "You have {{count}} items in your cart.",
+    },
+    "button.checkout": "Proceed to Checkout",
   },
-  'zh-CN': {
-    'greeting': '你好，{{name}}！',
-    'settings.title': '设置',
-    'settings.language': '语言',
+  "zh-CN": {
+    app: {
+      title: "欢迎你，{{name}}！",
+      subtitle: "探索精彩的系统平台。",
+    },
+    cart: {
+      items_zero: "您的购物车是空的。",
+      items_one: "您的购物车中有 1 件商品。",
+      items_other: "您的购物车中有 {{count}} 件商品。",
+    },
+    "button.checkout": "前往结算",
   },
 };
-
-export const DEFAULT_LOCALE = 'en';
 ```
 
-### 3. 包装应用
+### 2. Wrap with `I18nProvider`
 
 ```tsx
-import { I18nProvider } from 'react-simple-i18n';
-import { translations, DEFAULT_LOCALE } from './translations';
+import React, { useState } from "react";
+import { I18nProvider, type Locale } from "react-simple-i18n";
+import { translations } from "./translations";
+import AppContent from "./AppContent";
 
-function App() {
-  const [locale, setLocale] = useState(DEFAULT_LOCALE);
+export function App() {
+  const [locale, setLocale] = useState<Locale>("en");
 
   return (
-    <I18nProvider locale={locale} translations={translations}>
-      <YourApp />
+    <I18nProvider locale={locale} translations={translations} defaultLocale="en">
+      <AppContent onLocaleChange={setLocale} currentLocale={locale} />
     </I18nProvider>
   );
 }
 ```
 
-### 4. 在组件中使用
+### 3. Use `useI18n` in Any Component
 
 ```tsx
-import { useI18n } from 'react-simple-i18n';
+import React from "react";
+import { useI18n } from "react-simple-i18n";
 
-function Welcome() {
-  const { t, locale } = useI18n();
+export function AppContent() {
+  const { t, locale, locales } = useI18n();
 
   return (
     <div>
-      <h1>{t('greeting', { name: 'World' })}</h1>
-      <p>Current language: {locale}</p>
+      {/* 1. Basic nested key translation with parameters */}
+      <h1>{t("app.title", { name: "Alice" })}</h1>
+      <p>{t("app.subtitle")}</p>
+
+      {/* 2. Pluralization support */}
+      <p>{t("cart.items", { count: 3 })}</p>
+
+      {/* 3. Flat key lookup */}
+      <button>{t("button.checkout")}</button>
     </div>
   );
 }
 ```
 
-## 📖 API 参考
+---
 
-### `<I18nProvider>`
+## 📖 API Reference
 
-提供 i18n 上下文的组件。
+### `I18nProvider`
 
-**Props:**
-- `locale` (string, 必填) - 当前语言标识符
-- `translations` (Translations, 必填) - 翻译对象
-- `defaultLocale` (string, 可选) - 回退语言 (默认: 'en')
-- `children` (ReactNode, 必填) - 子组件
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `locale` | `string` | **Required** | Current active language code (e.g. `'en'`, `'zh-CN'`). |
+| `translations` | `Translations` | **Required** | Dictionary map of all language definitions. |
+| `defaultLocale` | `string` | `'en'` | Fallback language when a key is missing in active locale. |
+| `children` | `ReactNode` | **Required** | Child React components. |
 
 ### `useI18n()`
 
-返回 i18n 上下文值的 Hook。
+Returns an object containing:
+- `locale: string` — The current active locale.
+- `locales: string[]` — List of all available locale keys defined in translations.
+- `t(key: string, params?: Record<string, string | number>): string` — Translation lookup and interpolation function.
 
-**返回:**
-- `locale` (string) - 当前语言
-- `t` (function) - 翻译函数
+---
 
-### `t(key, params?)`
+## 📄 License
 
-翻译函数。
-
-**参数:**
-- `key` (string, 必填) - 翻译键 (如 'settings.title')
-- `params` (object, 可选) - 插值参数
-
-**返回:** 翻译后的字符串
-
-## 🔧 高级用法
-
-### 动态语言切换
-
-```tsx
-function LanguageSwitcher() {
-  const [locale, setLocale] = useState('en');
-  
-  return (
-    <select 
-      value={locale} 
-      onChange={(e) => setLocale(e.target.value)}
-    >
-      <option value="en">English</option>
-      <option value="zh-CN">简体中文</option>
-    </select>
-  );
-}
-```
-
-### 参数插值
-
-```typescript
-// 翻译定义
-'user.greeting': 'Hello, {{name}}! You have {{count}} messages.'
-
-// 使用
-t('user.greeting', { name: 'Alice', count: 5 })
-// 输出: "Hello, Alice! You have 5 messages."
-```
-
-### 直接复制使用（无需 npm）
-
-如果你的项目不想添加 npm 依赖，可以直接复制 `types.ts` 文件到你的项目中。
-
-## 📂 项目结构
-
-```
-react-simple-i18n/
-├── types.ts              # 核心实现（唯一必需文件）
-├── index.ts              # 导出文件
-├── package.json          # npm 配置
-├── tsconfig.json         # TypeScript 配置
-└── README.md             # 文档
-```
-
-## 🎯 支持的环境
-
-- **Node.js**: 16+
-- **React**: 16.8.0+ (需要 Hooks)
-- **浏览器**: 现代浏览器 (Chrome, Firefox, Safari, Edge)
-- **打包工具**: Vite, Webpack, Parcel, Rollup
-
-## ⚡ 性能
-
-- **轻量**: 压缩后约 1KB
-- **高性能**: 使用 `useMemo` 缓存
-- **Tree-shaking**: 支持按需导入
-
-## 🔗 源项目
-
-本库提取自 [CodexMonitor](https://github.com/glei4134-collab/CodexMonitor) 项目。
-
-- **GitHub**: https://github.com/glei4134-collab/CodexMonitor
-- **i18n 实现**: https://github.com/glei4134-collab/CodexMonitor/tree/master/src/i18n
-
-## 📄 许可证
-
-MIT License - 可以在你的项目中使用！
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
+MIT © [LBH](https://github.com/glei4134-collab)
